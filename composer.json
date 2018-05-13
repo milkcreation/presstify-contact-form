@@ -10,7 +10,7 @@
     "contact"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/contact-form",
-  "time": "2018-04-28",
+  "time": "2018-05-13",
   "license": "proprietary",
   "authors": [
     {
@@ -27,7 +27,7 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^1.5"
+    "presstify/framework": "^2.0"
   },
   "autoload": {
     "files": [
