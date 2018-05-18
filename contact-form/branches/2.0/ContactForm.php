@@ -11,40 +11,44 @@
 
 namespace tiFy\Plugins\ContactForm;
 
-use tiFy\App\Plugin;
-use tiFy\Core\Forms\Forms;
-use tiFy\Core\Router\Router;
-use tiFy\Core\Router\Taboox\Helpers\ContentHook;
+use tiFy\Apps\AppController;
+use tiFy\Form\Form;
+//use tiFy\Core\Router\Router;
+//use tiFy\Core\Router\Taboox\Helpers\ContentHook;
 
-class ContactForm extends Plugin
+final class ContactForm extends AppController
 {
     /**
-     * CONSTRUCTEUR.
+     * Liste des attributs de configuration
+     * @var array
+     */
+    protected $attributes = [];
+
+
+    /**
+     * Initialisation du controleur.
      *
      * @return void
      */
-    public function __construct()
+    public function appBoot()
     {
-        parent::__construct();
-
-        // Déclaration des événements
         $this->appAddAction('tify_form_register');
-        $this->appAddAction('tify_router_register');
+        //$this->appAddAction('tify_router_register');
         add_filter('the_content', [$this, 'the_content']);
     }
 
     /**
      * Déclaration de formulaire
      *
-     * @return \tiFy\Core\Forms\Factory
+     * @param Form $formController Classe de rappel du controleur de formulaires.
+     *
+     * @return void
      */
-    public function tify_form_register()
+    public function tify_form_register($formController)
     {
-        $attrs = self::tFyAppConfig('form');
-
-        return Forms::register(
-            (isset($attrs['ID']) ? $attrs['ID'] : 'tiFySetContactForm'),
-            $attrs
+        $formController->register(
+            'tiFyPluginContactForm',
+            $this->appConfig('form', [])
         );
     }
 
@@ -75,14 +79,14 @@ class ContactForm extends Plugin
     /**
      *
      */
-    final public function the_content($content)
+    public function the_content($content)
     {
         // Bypass
         if (! in_the_loop()) :
             return $content;
         elseif (! is_singular()) :
             return $content;
-        elseif (Router::get()->getContentHook('tiFySetContactForm') !== get_the_ID()) :
+        elseif (Router::get()->getContentHook('tiFyPluginContactForm') !== get_the_ID()) :
             return $content;
         endif;
 
@@ -115,9 +119,6 @@ class ContactForm extends Plugin
      */
     public function display($echo = true)
     {
-        $form_attrs = $this->appConfig('form', []);
-        $form_id = isset($form_attrs['ID']) ? $form_attrs['ID'] : 'tiFySetContactForm';
-
-        return Forms::display($form_id, $echo);
+        return Form::display($this->appConfig('form.name', 'tiFyPluginContactForm'), $echo);
     }
 }
