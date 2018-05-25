@@ -2,39 +2,15 @@
 
 namespace
 {
-    use tiFy\Set\ContactForm\ContactForm;
-    use tiFy\Core\Forms\Forms;
-    use tiFy\Core\Router\Router;
+    use tiFy\Plugins\ContactForm\ContactForm;
 
     /**
-     * Vérification d'affichage du formulaire de contact sur une page
+     * Affichage du formulaire de contact.
      *
-     * @param int|object $post Page de contenu du site d'affichage du formulaire de contact. Par défaut la vérification est faites sur la page courante.
-     *
-     * @return bool
+     * @return string
      */
-    function tify_set_contactform_is($post = 0)
+    function tify_plugin_contact_form_display($echo = true)
     {
-        return Router::get()->isContentHook('tiFySetContactForm', $post);
-    }
-
-    /**
-     * Récupération de la identifiant de la page d'affichage du formulaire de contact
-     *
-     * @param int $default Valeur de retour par défaut
-     *
-     * @return null|int
-     */
-    function tify_set_contactform_hook_id($default = 0)
-    {
-        return ContentHook::get('tiFySetContactForm', $default);
-    }
-
-    /**
-     * Affichage du formulaire de contact
-     */
-    function tify_set_contactform_display($echo = true)
-    {
-        return ContactForm::displayForm($echo);
+        return ContactForm::appInstance()->display($echo);
     }
 }
