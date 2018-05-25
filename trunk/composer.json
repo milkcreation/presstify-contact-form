@@ -1,0 +1,47 @@
+{
+  "name": "presstify-plugins/contact-form",
+  "description": "Extension PresstiFy de gestion de formulaire de contact.",
+  "type": "presstify-plugin",
+  "keywords": [
+    "presstify",
+    "plugins",
+    "wordpress",
+    "form",
+    "contact"
+  ],
+  "homepage": "https://svn.tigreblanc.fr/presstify-plugins/contact-form",
+  "time": "2018-05-25",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jordy Manner",
+      "email": "jordy.manner@milkcreation.fr",
+      "role": "Developper"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://composer.tigreblanc.fr/presstify/"
+    }
+  ],
+  "require": {
+    "composer/installers": "~1.0",
+    "presstify/framework": "^2.0"
+  },
+  "autoload": {
+    "files": [
+      "Helpers.php"
+    ],
+    "psr-4": {
+      "tiFy\\Plugins\\ContactForm\\": ""
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config" : {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
