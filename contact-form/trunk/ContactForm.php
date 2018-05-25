@@ -11,19 +11,41 @@
 
 namespace tiFy\Plugins\ContactForm;
 
+use Illuminate\Support\Arr;
 use tiFy\Apps\AppController;
 use tiFy\Form\Form;
-//use tiFy\Core\Router\Router;
-//use tiFy\Core\Router\Taboox\Helpers\ContentHook;
 
 final class ContactForm extends AppController
 {
     /**
-     * Liste des attributs de configuration
-     * @var array
+     * Liste des attributs de configuration.
+     * @var array {
+     *      @var bool|string $content_display Affichage du contenu de la page lorsque le formulaire est associé à une page.
+     *                                      'before'|true : Affiche le contenu du post avant le formulaire.
+     *                                      'after' : Affiche le contenu du post après le formulaire.
+     *                                      'hide' : Masque le contenu du post.
+     *                                       'only' : Affiche seulement le contenu du post, le formulaire est masqué et doit être appelé manuellement.
+     *                                       false : Masque à la fois le contenu du post et le formulaire.
+     * @var array $form {
+     *      Attributs de configuration du formulaire
+     * }
+     * @var $router @todo {
+     *      Attributs de configuration de la page d'affichage du formulaire
+     *
+     *      @var string $title Intitulé de qualification de la route
+     *      @var string $desc Texte de description de la route
+     *      @var string object_type Type d'objet (post|taxonomy) en relation avec la route
+     *      @var string object_name Nom de qualification de l'objet en relation (ex: post, page, category, tag ...)
+     *      @var string option_name Clé d'index d'enregistrement en base de données
+     *      @var int selected Id de l'objet en relation
+     *      @var string list_order Ordre d'affichage de la liste de selection de l'interface d'administration
+     *      @var string show_option_none Intitulé de la liste de selection de l'interface d'administration lorsqu'aucune relation n'a été établie
+     * }
      */
-    protected $attributes = [];
-
+    protected $attributes = [
+        'content_display' => true,
+        'form' => []
+    ];
 
     /**
      * Initialisation du controleur.
@@ -32,48 +54,108 @@ final class ContactForm extends AppController
      */
     public function appBoot()
     {
+        $this->set(
+            'form',
+            [
+                'title'   => __('Formulaire de contact', 'theme'),
+                'attrs'   => [
+                    'class' => 'tiFySetContactForm'
+                ],
+                'fields'  => [
+                    [
+                        'slug'     => 'lastname',
+                        'title'    => __('Nom', 'theme'),
+                        'attrs'    => [
+                            'autocomplete' => 'family-name',
+                        ],
+                        'type'     => 'text',
+                        'required' => true
+                    ],
+                    [
+                        'slug'     => 'firstname',
+                        'title'    => __('Prénom', 'theme'),
+                        'attrs'    => [
+                            'autocomplete' => 'given-name'
+                        ],
+                        'type'     => 'text',
+                        'required' => true
+                    ],
+                    [
+                        'slug'         => 'email',
+                        'title'        => __('E-mail', 'theme'),
+                        'attrs'        => [
+                            'autocomplete' => 'email'
+                        ],
+                        'type'         => 'text',
+                        'integrity_cb' => 'is_email',
+                        'required'     => true
+                    ],
+                    [
+                        'slug'     => 'subject',
+                        'title'    => __('Sujet du message', 'theme'),
+                        'type'     => 'text',
+                        'attrs'    => [
+                            'class' => '%s tiFyForm-FieldInput--tify_dropdown--gray'
+                        ],
+                        'required' => true
+                    ],
+                    [
+                        'slug'     => 'message',
+                        'title'    => __('Message', 'theme'),
+                        'type'     => 'textarea',
+                        'required' => true
+                    ],
+                    [
+                        'slug'     => 'captcha',
+                        'title'    => __('code de sécurité', 'theme'),
+                        'type'     => 'simple-captcha-image',
+                        'required' => true
+                    ]
+                ],
+                'addons'  => [
+                    'mailer' => true
+                ]
+            ]
+        );
+
+
         $this->appAddAction('tify_form_register');
-        //$this->appAddAction('tify_router_register');
-        add_filter('the_content', [$this, 'the_content']);
     }
 
     /**
-     * Déclaration de formulaire
+     * Affichage du formulaire.
      *
-     * @param Form $formController Classe de rappel du controleur de formulaires.
+     * @return string
+     */
+    public function display($echo = true)
+    {
+        return $this->appServiceGet(Form::class)->display('tiFyPluginContactForm', $echo);
+    }
+
+    /**
+     * Récupération d'un attribut.
+     *
+     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
+     * @param mixed $default Valeur de retour par defaut.
+     *
+     * @return mixed
+     */
+    public function get($key, $default = '')
+    {
+        return Arr::get($this->attributes, $key, $default);
+    }
+
+    /**
+     * Définition d'un attribut.
+     *
+     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
+     * @param array $value Valeur de l'attribut.
      *
      * @return void
      */
-    public function tify_form_register($formController)
+    public function set($key, $value)
     {
-        $formController->register(
-            'tiFyPluginContactForm',
-            $this->appConfig('form', [])
-        );
-    }
-
-    /**
-     * Déclaration de route
-     *
-     * @return null|\tiFy\Core\Router\Factory
-     */
-    public function tify_router_register()
-    {
-        // Bypass
-        if(! $router = self::tFyAppConfig('router')) :
-            return;
-        endif;
-
-        $defaults = [
-            'title'       => __('Formulaire de contact', 'tify'),
-            'option_name' => 'tiFySetContactForm-hook_id',
-        ];
-        $args = is_bool($router) ? $defaults : \wp_parse_args($router, $defaults);
-
-        return Router::register(
-            'tiFySetContactForm',
-            $args
-        );
+        Arr::set($this->attributes, $key, $value);
     }
 
     /**
@@ -81,7 +163,6 @@ final class ContactForm extends AppController
      */
     public function the_content($content)
     {
-        // Bypass
         if (! in_the_loop()) :
             return $content;
         elseif (! is_singular()) :
@@ -105,7 +186,7 @@ final class ContactForm extends AppController
         endif;
 
         $output .= $this->display(false);
-        if ($content_display === 'after' ) :
+        if ($content_display === 'after') :
             $output .= $content;
         endif;
 
@@ -115,10 +196,17 @@ final class ContactForm extends AppController
     }
 
     /**
+     * Déclaration du formulaire de contact.
      *
+     * @param Form $formController Classe de rappel du controleur de formulaires.
+     *
+     * @return void
      */
-    public function display($echo = true)
+    public function tify_form_register($formController)
     {
-        return Form::display($this->appConfig('form.name', 'tiFyPluginContactForm'), $echo);
+        $formController->register(
+            'tiFyPluginContactForm',
+            $this->appConfig('form', $this->get('form', []))
+        );
     }
 }
