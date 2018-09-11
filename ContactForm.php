@@ -12,10 +12,10 @@
 namespace tiFy\Plugins\ContactForm;
 
 use Illuminate\Support\Arr;
-use tiFy\Apps\AppController;
+use tiFy\App\Dependency\AbstractAppDependency;
 use tiFy\Form\Form;
 
-final class ContactForm extends AppController
+class ContactForm extends AbstractAppDependency
 {
     /**
      * Liste des attributs de configuration.
@@ -48,11 +48,9 @@ final class ContactForm extends AppController
     ];
 
     /**
-     * Initialisation du controleur.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function appBoot()
+    public function boot()
     {
         $this->set(
             'form',
@@ -118,8 +116,7 @@ final class ContactForm extends AppController
             ]
         );
 
-
-        $this->appAddAction('tify_form_register');
+        $this->app->appAddAction('tify_form_register', [$this, 'tify_form_register']);
     }
 
     /**
@@ -129,7 +126,7 @@ final class ContactForm extends AppController
      */
     public function display($echo = true)
     {
-        return $this->appServiceGet(Form::class)->display('tiFyPluginContactForm', $echo);
+        return $this->app->appServiceGet(Form::class)->display('tiFyPluginContactForm', $echo);
     }
 
     /**
@@ -172,7 +169,7 @@ final class ContactForm extends AppController
         endif;
 
         // Masque le contenu et le formulaire sur la page d'accroche
-        if (! $content_display = $this->appConfig('content_display')) :
+        if (! $content_display = config('contact-form.content_display')) :
             return '';
 
         // Affiche uniquement le contenu de la page
@@ -206,7 +203,7 @@ final class ContactForm extends AppController
     {
         $formController->register(
             'tiFyPluginContactForm',
-            $this->appConfig('form', $this->get('form', []))
+            config('contact-form.form', $this->get('form', []))
         );
     }
 }
