@@ -4,18 +4,17 @@
  * @name ContactForm
  * @desc Extension PresstiFy de gestion de formulaire de contact.
  * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstiFy
+ * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
  * @version 2.0.0
  */
 
 namespace tiFy\Plugins\ContactForm;
 
-use Illuminate\Support\Arr;
-use tiFy\Apps\AppController;
+use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Form\Form;
 
-final class ContactForm extends AppController
+class ContactForm extends AbstractParametersBag
 {
     /**
      * Liste des attributs de configuration.
@@ -48,18 +47,40 @@ final class ContactForm extends AppController
     ];
 
     /**
-     * Initialisation du controleur.
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    public function appBoot()
+    public function __construct()
     {
-        $this->set(
-            'form',
-            [
+        add_action(
+            'wp_loaded',
+            function () {
+                parent::__construct(config('contact-form'));
+
+                form()->add('contact-form', $this->get('form'));
+            }
+        );
+    }
+
+    /**
+     * Résolution de sortie de la classe en tant que chaîne de caractère.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->display();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defaults()
+    {
+        return [
+            'form' => [
                 'title'   => __('Formulaire de contact', 'theme'),
                 'attrs'   => [
-                    'class' => 'tiFySetContactForm'
+                    'class' => 'ContactForm'
                 ],
                 'fields'  => [
                     [
@@ -116,10 +137,7 @@ final class ContactForm extends AppController
                     'mailer' => true
                 ]
             ]
-        );
-
-
-        $this->appAddAction('tify_form_register');
+        ];
     }
 
     /**
@@ -127,39 +145,13 @@ final class ContactForm extends AppController
      *
      * @return string
      */
-    public function display($echo = true)
+    public function display()
     {
-        return $this->appServiceGet(Form::class)->display('tiFyPluginContactForm', $echo);
+        return form()->display('contact-form');
     }
 
     /**
-     * Récupération d'un attribut.
-     *
-     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param mixed $default Valeur de retour par defaut.
-     *
-     * @return mixed
-     */
-    public function get($key, $default = '')
-    {
-        return Arr::get($this->attributes, $key, $default);
-    }
-
-    /**
-     * Définition d'un attribut.
-     *
-     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param array $value Valeur de l'attribut.
-     *
-     * @return void
-     */
-    public function set($key, $value)
-    {
-        Arr::set($this->attributes, $key, $value);
-    }
-
-    /**
-     *
+     * @todo
      */
     public function the_content($content)
     {
@@ -172,7 +164,7 @@ final class ContactForm extends AppController
         endif;
 
         // Masque le contenu et le formulaire sur la page d'accroche
-        if (! $content_display = $this->appConfig('content_display')) :
+        if (! $content_display = config('contact-form.content_display')) :
             return '';
 
         // Affiche uniquement le contenu de la page
@@ -193,20 +185,5 @@ final class ContactForm extends AppController
         remove_filter(current_filter(), __METHOD__, 10);
 
         return $output;
-    }
-
-    /**
-     * Déclaration du formulaire de contact.
-     *
-     * @param Form $formController Classe de rappel du controleur de formulaires.
-     *
-     * @return void
-     */
-    public function tify_form_register($formController)
-    {
-        $formController->register(
-            'tiFyPluginContactForm',
-            $this->appConfig('form', $this->get('form', []))
-        );
     }
 }
