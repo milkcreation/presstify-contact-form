@@ -4,18 +4,17 @@
  * @name ContactForm
  * @desc Extension PresstiFy de gestion de formulaire de contact.
  * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstiFy
+ * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
  * @version 2.0.0
  */
 
 namespace tiFy\Plugins\ContactForm;
 
-use Illuminate\Support\Arr;
-use tiFy\App\Dependency\AbstractAppDependency;
+use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Form\Form;
 
-class ContactForm extends AbstractAppDependency
+class ContactForm extends AbstractParametersBag
 {
     /**
      * Liste des attributs de configuration.
@@ -50,14 +49,38 @@ class ContactForm extends AbstractAppDependency
     /**
      * {@inheritdoc}
      */
-    public function boot()
+    public function __construct()
     {
-        $this->set(
-            'form',
-            [
+        add_action(
+            'wp_loaded',
+            function () {
+                parent::__construct(config('contact-form'));
+
+                form()->add('contact-form', $this->get('form'));
+            }
+        );
+    }
+
+    /**
+     * Résolution de sortie de la classe en tant que chaîne de caractère.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->display();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function defaults()
+    {
+        return [
+            'form' => [
                 'title'   => __('Formulaire de contact', 'theme'),
                 'attrs'   => [
-                    'class' => 'tiFySetContactForm'
+                    'class' => 'ContactForm'
                 ],
                 'fields'  => [
                     [
@@ -114,9 +137,7 @@ class ContactForm extends AbstractAppDependency
                     'mailer' => true
                 ]
             ]
-        );
-
-        $this->app->appAddAction('tify_form_register', [$this, 'tify_form_register']);
+        ];
     }
 
     /**
@@ -124,39 +145,13 @@ class ContactForm extends AbstractAppDependency
      *
      * @return string
      */
-    public function display($echo = true)
+    public function display()
     {
-        return $this->app->appServiceGet(Form::class)->display('tiFyPluginContactForm', $echo);
+        return form()->display('contact-form');
     }
 
     /**
-     * Récupération d'un attribut.
-     *
-     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param mixed $default Valeur de retour par defaut.
-     *
-     * @return mixed
-     */
-    public function get($key, $default = '')
-    {
-        return Arr::get($this->attributes, $key, $default);
-    }
-
-    /**
-     * Définition d'un attribut.
-     *
-     * @param array $key Clé d'indexe de l'attribut. Syntaxe à point permise.
-     * @param array $value Valeur de l'attribut.
-     *
-     * @return void
-     */
-    public function set($key, $value)
-    {
-        Arr::set($this->attributes, $key, $value);
-    }
-
-    /**
-     *
+     * @todo
      */
     public function the_content($content)
     {
@@ -190,20 +185,5 @@ class ContactForm extends AbstractAppDependency
         remove_filter(current_filter(), __METHOD__, 10);
 
         return $output;
-    }
-
-    /**
-     * Déclaration du formulaire de contact.
-     *
-     * @param Form $formController Classe de rappel du controleur de formulaires.
-     *
-     * @return void
-     */
-    public function tify_form_register($formController)
-    {
-        $formController->register(
-            'tiFyPluginContactForm',
-            config('contact-form.form', $this->get('form', []))
-        );
     }
 }
