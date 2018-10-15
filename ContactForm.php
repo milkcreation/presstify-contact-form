@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
- * @version 2.0.0
+ * @version 2.0.1
  */
 
 namespace tiFy\Plugins\ContactForm;
