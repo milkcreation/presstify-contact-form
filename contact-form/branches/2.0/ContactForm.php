@@ -19,31 +19,32 @@ class ContactForm extends AbstractParametersBag
     /**
      * Liste des attributs de configuration.
      * @var array {
-     *      @var bool|string $content_display Affichage du contenu de la page lorsque le formulaire est associé à une page.
+     * @var bool|string $content_display Affichage du contenu de la page lorsque le formulaire est associé à une page.
      *                                      'before'|true : Affiche le contenu du post avant le formulaire.
      *                                      'after' : Affiche le contenu du post après le formulaire.
      *                                      'hide' : Masque le contenu du post.
-     *                                       'only' : Affiche seulement le contenu du post, le formulaire est masqué et doit être appelé manuellement.
-     *                                       false : Masque à la fois le contenu du post et le formulaire.
+     *                                       'only' : Affiche seulement le contenu du post, le formulaire est masqué et
+     *     doit être appelé manuellement. false : Masque à la fois le contenu du post et le formulaire.
      * @var array $form {
      *      Attributs de configuration du formulaire
      * }
      * @var $router @todo {
      *      Attributs de configuration de la page d'affichage du formulaire
      *
-     *      @var string $title Intitulé de qualification de la route
-     *      @var string $desc Texte de description de la route
-     *      @var string object_type Type d'objet (post|taxonomy) en relation avec la route
-     *      @var string object_name Nom de qualification de l'objet en relation (ex: post, page, category, tag ...)
-     *      @var string option_name Clé d'index d'enregistrement en base de données
-     *      @var int selected Id de l'objet en relation
-     *      @var string list_order Ordre d'affichage de la liste de selection de l'interface d'administration
-     *      @var string show_option_none Intitulé de la liste de selection de l'interface d'administration lorsqu'aucune relation n'a été établie
+     * @var string $title Intitulé de qualification de la route
+     * @var string $desc Texte de description de la route
+     * @var string object_type Type d'objet (post|taxonomy) en relation avec la route
+     * @var string object_name Nom de qualification de l'objet en relation (ex: post, page, category, tag ...)
+     * @var string option_name Clé d'index d'enregistrement en base de données
+     * @var int selected Id de l'objet en relation
+     * @var string list_order Ordre d'affichage de la liste de selection de l'interface d'administration
+     * @var string show_option_none Intitulé de la liste de selection de l'interface d'administration lorsqu'aucune
+     *     relation n'a été établie
      * }
      */
     protected $attributes = [
         'content_display' => true,
-        'form' => []
+        'form'            => []
     ];
 
     /**
@@ -54,7 +55,7 @@ class ContactForm extends AbstractParametersBag
         add_action(
             'wp_loaded',
             function () {
-                parent::__construct(config('contact-form'));
+                parent::__construct(config('contact-form', []));
 
                 form()->add('contact-form', $this->get('form'));
             }
@@ -78,11 +79,11 @@ class ContactForm extends AbstractParametersBag
     {
         return [
             'form' => [
-                'title'   => __('Formulaire de contact', 'theme'),
-                'attrs'   => [
+                'title'  => __('Formulaire de contact', 'theme'),
+                'attrs'  => [
                     'class' => 'ContactForm'
                 ],
-                'fields'  => [
+                'fields' => [
                     [
                         'slug'     => 'lastname',
                         'title'    => __('Nom', 'theme'),
@@ -133,7 +134,7 @@ class ContactForm extends AbstractParametersBag
                         'required' => true
                     ]
                 ],
-                'addons'  => [
+                'addons' => [
                     'mailer' => true
                 ]
             ]
@@ -155,16 +156,16 @@ class ContactForm extends AbstractParametersBag
      */
     public function the_content($content)
     {
-        if (! in_the_loop()) :
+        if (!in_the_loop()) :
             return $content;
-        elseif (! is_singular()) :
+        elseif (!is_singular()) :
             return $content;
         elseif (Router::get()->getContentHook('tiFyPluginContactForm') !== get_the_ID()) :
             return $content;
         endif;
 
         // Masque le contenu et le formulaire sur la page d'accroche
-        if (! $content_display = config('contact-form.content_display')) :
+        if (!$content_display = config('contact-form.content_display')) :
             return '';
 
         // Affiche uniquement le contenu de la page
@@ -172,7 +173,7 @@ class ContactForm extends AbstractParametersBag
             return $content;
         endif;
 
-        $output  = "";
+        $output = "";
         if (($content_display === 'before') || ($content_display === true)) :
             $output .= $content;
         endif;
