@@ -6,7 +6,7 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
- * @version 2.0.2
+ * @version 2.0.3
  */
 
 namespace tiFy\Plugins\ContactForm;
@@ -14,6 +14,34 @@ namespace tiFy\Plugins\ContactForm;
 use tiFy\Kernel\Parameters\AbstractParametersBag;
 use tiFy\Form\Form;
 
+/**
+ * Class ContactForm
+ * @package tiFy\Plugins\ContactForm
+ *
+ * Activation :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\ContactForm\ContactForm à la liste des fournisseurs de services
+ *     chargés automatiquement par l'application.
+ * ex.
+ * <?php
+ * ...
+ * use tiFy\Plugins\ContactForm\ContactForm;
+ * ...
+ *
+ * return [
+ *      ...
+ *      'providers' => [
+ *          ...
+ *          ContactForm::class
+ *          ...
+ *      ]
+ * ];
+ *
+ * Configuration :
+ * ----------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier admin-ui.php
+ * @see /vendor/presstify-plugins/contact-form/Resources/config/contact-form.php Exemple de configuration
+ */
 class ContactForm extends AbstractParametersBag
 {
     /**
