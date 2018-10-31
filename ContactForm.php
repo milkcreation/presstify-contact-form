@@ -6,12 +6,12 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
- * @version 2.0.3
+ * @version 2.0.4
  */
 
 namespace tiFy\Plugins\ContactForm;
 
-use tiFy\Kernel\Parameters\AbstractParametersBag;
+use tiFy\Kernel\Params\ParamsBag;
 use tiFy\Form\Form;
 
 /**
@@ -42,7 +42,7 @@ use tiFy\Form\Form;
  * Dans le dossier de config, créer le fichier admin-ui.php
  * @see /vendor/presstify-plugins/contact-form/Resources/config/contact-form.php Exemple de configuration
  */
-class ContactForm extends AbstractParametersBag
+class ContactForm extends ParamsBag
 {
     /**
      * Liste des attributs de configuration.
