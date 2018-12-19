@@ -6,13 +6,12 @@
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package presstify-plugins/contact-form
  * @namespace \tiFy\Plugins\ContactForm
- * @version 2.0.4
+ * @version 2.0.5
  */
 
 namespace tiFy\Plugins\ContactForm;
 
 use tiFy\Kernel\Params\ParamsBag;
-use tiFy\Form\Form;
 
 /**
  * Class ContactForm
@@ -85,12 +84,14 @@ class ContactForm extends ParamsBag
      */
     public function __construct()
     {
+        parent::__construct();
+
         add_action(
             'init',
             function () {
                 parent::__construct(config('contact-form', []));
 
-                form()->add('contact-form', $this->get('form', []));
+                form()->register('contact-form', $this->get('form', []));
             }
         );
     }
