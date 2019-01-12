@@ -10,7 +10,7 @@
     "contact"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/contact-form",
-  "time": "2018-05-25",
+  "time": "2018-12-19",
   "license": "proprietary",
   "authors": [
     {
@@ -27,11 +27,11 @@
   ],
   "require": {
     "composer/installers": "~1.0",
-    "presstify/framework": "^2.0"
+    "presstify/framework": "2.0.*"
   },
   "autoload": {
     "files": [
-      "Helpers.php"
+      "helpers.php"
     ],
     "psr-4": {
       "tiFy\\Plugins\\ContactForm\\": ""
@@ -40,8 +40,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config" : {
+    "optimize-autoloader": true,
     "preferred-install": "dist",
-    "sort-packages": true,
-    "optimize-autoloader": true
+    "secure-http": false,
+    "sort-packages": true
   }
 }
