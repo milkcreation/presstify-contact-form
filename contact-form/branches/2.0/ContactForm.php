@@ -1,26 +1,21 @@
 <?php
 
-/**
- * @name ContactForm
- * @desc Extension PresstiFy de gestion de formulaire de contact.
- * @author Jordy Manner <jordy@milkcreation.fr>
- * @package presstify-plugins/contact-form
- * @namespace \tiFy\Plugins\ContactForm
- * @version 2.0.5
- */
-
 namespace tiFy\Plugins\ContactForm;
 
 use tiFy\Kernel\Params\ParamsBag;
 
 /**
  * Class ContactForm
- * @package tiFy\Plugins\ContactForm
  *
- * Activation :
- * ----------------------------------------------------------------------------------------------------
- * Dans config/app.php ajouter \tiFy\Plugins\ContactForm\ContactForm à la liste des fournisseurs de services
- *     chargés automatiquement par l'application.
+ * @desc Extension PresstiFy de gestion de formulaire de contact.
+ * @author Jordy Manner <jordy@milkcreation.fr>
+ * @package tiFy\Plugins\ContactForm
+ * @version 2.0.6
+ *
+ * USAGE :
+ * Activation
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans config/app.php ajouter \tiFy\Plugins\ContactForm\ContactForm à la liste des fournisseurs de services.
  * ex.
  * <?php
  * ...
@@ -36,10 +31,10 @@ use tiFy\Kernel\Params\ParamsBag;
  *      ]
  * ];
  *
- * Configuration :
- * ----------------------------------------------------------------------------------------------------
- * Dans le dossier de config, créer le fichier admin-ui.php
- * @see /vendor/presstify-plugins/contact-form/Resources/config/contact-form.php Exemple de configuration
+ * Configuration
+ * ---------------------------------------------------------------------------------------------------------------------
+ * Dans le dossier de config, créer le fichier contact-form.php
+ * @see /vendor/presstify-plugins/contact-form/Resources/config/contact-form.php
  */
 class ContactForm extends ParamsBag
 {
