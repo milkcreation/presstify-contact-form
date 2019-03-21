@@ -2,7 +2,7 @@
 
 namespace tiFy\Plugins\ContactForm;
 
-use tiFy\Kernel\Params\ParamsBag;
+use tiFy\Support\ParamsBag;
 
 /**
  * Class ContactForm
@@ -10,7 +10,7 @@ use tiFy\Kernel\Params\ParamsBag;
  * @desc Extension PresstiFy de gestion de formulaire de contact.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\ContactForm
- * @version 2.0.6
+ * @version 2.0.7
  *
  * USAGE :
  * Activation
@@ -40,34 +40,7 @@ class ContactForm extends ParamsBag
 {
     /**
      * Liste des attributs de configuration.
-     * @todo  {
-     * @var bool|string $content_display Affichage du contenu de la page lorsque le formulaire est associé à une page.
-     *      'before'|true : Affiche le contenu du post avant le formulaire.
-     *      'after' : Affiche le contenu du post après le formulaire.
-     *      'hide' : Masque le contenu du post.
-     *      'only' : Affiche seulement le contenu du post, le formulaire est masqué et doit être appelé manuellement.
-     *      false : Masque à la fois le contenu du post et le formulaire.
-     * }
-     *
-     * @var array $form {
-     *      Attributs de configuration du formulaire.
-     * }
-     *
-     * @todo {
-     * @var array $router {
-     *      Attributs de configuration de la page d'affichage du formulaire
-     *
-     *      @var string $title Intitulé de qualification de la route
-     *      @var string $desc Texte de description de la route
-     *      @var string object_type Type d'objet (post|taxonomy) en relation avec la route
-     *      @var string object_name Nom de qualification de l'objet en relation (ex: post, page, category, tag ...)
-     *      @var string option_name Clé d'index d'enregistrement en base de données
-     *      @var int selected Id de l'objet en relation
-     *      @var string list_order Ordre d'affichage de la liste de selection de l'interface d'administration
-     *      @var string show_option_none Intitulé de la liste de selection de l'interface d'administration lorsqu'aucune
-     *     relation n'a été établie
-     * }
-     * }
+     * @var array
      */
     protected $attributes = [
         'content_display' => true,
@@ -79,16 +52,11 @@ class ContactForm extends ParamsBag
      */
     public function __construct()
     {
-        parent::__construct();
+        add_action('after_setup_theme', function () {
+            $this->set(config('contact-form', []))->parse();
 
-        add_action(
-            'init',
-            function () {
-                parent::__construct(config('contact-form', []));
-
-                form()->register('contact-form', $this->get('form', []));
-            }
-        );
+            form()->register('contact-form', $this->get('form', []));
+        });
     }
 
     /**
@@ -168,42 +136,4 @@ class ContactForm extends ParamsBag
     {
         return form('contact-form');
     }
-
-    /**
-     * -----------------------------------------------------------------------------------------------------------------
-     * @todo
-
-    public function the_content($content)
-    {
-        if (!in_the_loop()) :
-            return $content;
-        elseif (!is_singular()) :
-            return $content;
-        elseif (Router::get()->getContentHook('tiFyPluginContactForm') !== get_the_ID()) :
-            return $content;
-        endif;
-
-        // Masque le contenu et le formulaire sur la page d'accroche
-        if (!$content_display = config('contact-form.content_display')) :
-            return '';
-
-        // Affiche uniquement le contenu de la page
-        elseif ($content_display === 'only') :
-            return $content;
-        endif;
-
-        $output = "";
-        if (($content_display === 'before') || ($content_display === true)) :
-            $output .= $content;
-        endif;
-
-        $output .= $this->display(false);
-        if ($content_display === 'after') :
-            $output .= $content;
-        endif;
-
-        remove_filter(current_filter(), __METHOD__, 10);
-
-        return $output;
-    }*/
 }
