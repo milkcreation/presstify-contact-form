@@ -11,7 +11,7 @@ return [
             'class' => 'ContactForm'
         ],
         'fields' => [
-            'lastname' => [
+            'lastname'  => [
                 'title'    => __('Nom', 'theme'),
                 'attrs'    => [
                     'autocomplete' => 'family-name',
@@ -27,31 +27,33 @@ return [
                 'type'     => 'text',
                 'required' => true
             ],
-            'email' => [
-                'title'        => __('E-mail', 'theme'),
-                'attrs'        => [
+            'email'     => [
+                'title'       => __('E-mail', 'theme'),
+                'attrs'       => [
                     'autocomplete' => 'email'
                 ],
-                'type'         => 'text',
-                'validations'  => 'is-email',
-                'required'     => true
+                'type'        => 'text',
+                'validations' => 'is-email',
+                'required'    => true
             ],
-            'subject' => [
+            'subject'   => [
                 'title'    => __('Sujet du message', 'theme'),
                 'type'     => 'text',
                 'required' => true
             ],
-            'message' => [
+            'message'   => [
                 'title'    => __('Message', 'theme'),
                 'type'     => 'textarea',
                 'required' => true
             ],
-            'captcha' => [
+            'captcha'   => [
                 'title'    => __('code de sécurité', 'theme'),
                 'type'     => 'simple-captcha-image',
                 'required' => true
             ]
         ],
-        'addons' => ['mailer']
+        'addons' => [
+            'mailer'
+        ]
     ]
 ];
