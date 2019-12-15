@@ -10,7 +10,7 @@ use tiFy\Support\ParamsBag;
  * @desc Extension PresstiFy de gestion de formulaire de contact.
  * @author Jordy Manner <jordy@milkcreation.fr>
  * @package tiFy\Plugins\ContactForm
- * @version 2.0.9
+ * @version 2.0.10
  *
  * USAGE :
  * Activation
@@ -122,7 +122,7 @@ class ContactForm extends ParamsBag
                         'required' => true
                     ]
                 ],
-                'addons' => ['mailer']
+                'addons' => ['mailer' => true]
             ]
         ];
     }
