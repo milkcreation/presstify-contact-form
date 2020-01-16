@@ -10,7 +10,7 @@
     "contact"
   ],
   "homepage": "https://svn.tigreblanc.fr/presstify-plugins/contact-form",
-  "time": "2019-12-14",
+  "time": "2020-01-16",
   "license": "proprietary",
   "authors": [
     {
@@ -22,7 +22,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://composer.tigreblanc.fr/presstify/"
+      "url": "https://composer.tigreblanc.fr/presstify"
     }
   ],
   "require": {
